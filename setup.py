@@ -1,10 +1,18 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(
     name="modelos_decision",
     version="1.0.0",
     description="Herramientas de Modelos de Decisión Multicriterio para Google Colab",
-    packages=find_packages(),
+    py_modules=[
+        "linea1_estadistica",
+        "linea2_normalizacion",
+        "linea3_ponderaciones",
+        "linea4_agregacion",
+        "linea5_ahp",
+        "linea6_topsis",
+        "linea7_rim",
+    ],
     install_requires=[
         "numpy",
         "pandas",
