@@ -3,7 +3,7 @@ Paquete Python con herramientas de Análisis Multicriterio para usar en Google C
 
 ## Instalación
 ```python
-!pip install git+https://github.com/Leonavarro2287/Modelos2026_Normalizacion-Ponderacion-Agregacion.git -q
+!pip install git+https://github.com/Leonavarro2287/Modelos2026_Normalizacion_Ponderacion_Agregacion.git -q
 ```
 
 ## Herramientas disponibles
