@@ -28,7 +28,7 @@ Cada herramienta se usa en una celda separada:
 
 ```python
 # Celda 1 — Estadística Descriptiva
-from Modelos2026_Normalizacion_Ponderacion_Agregacion import run_estadistica
+from modelos_decision import run_estadistica
 run_estadistica()
 ```
 
