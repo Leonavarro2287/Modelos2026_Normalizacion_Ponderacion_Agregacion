@@ -23,7 +23,7 @@ Cada herramienta se usa en una celda separada:
 
 ```python
 # Celda 0 — Instalación (ejecutar una sola vez)
-!pip install git+https://github.com/Leonavarro2287/Modelos2026_Normalizacion-Ponderacion-Agregacion.git -q
+!pip install git+https://github.com/Leonavarro2287/Modelos2026_Normalizacion_Ponderacion_Agregacion.git -q
 ```
 
 ```python
