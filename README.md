@@ -14,3 +14,12 @@ Paquete Python con herramientas interactivas para análisis de decisiones multic
 #run_agregacion()	Agregación — Suma Ponderada, Media Geométrica Ponderada
 #run_topsis()	TOPSIS — 4 distancias (Euclidiana, Manhattan, Chebyshev, Minkowski)
 #run_rim()	RIM — Rango Ideal Flexible con ideal/anti‑ideal personalizable
+
+Uso en Colab
+
+Cada herramienta se ejecuta en una celda separada:
+
+# Celda 1 — Estadística Descriptiva
+from modelos2026 import run_estadistica
+run_estadistica()
+
