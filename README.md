@@ -5,4 +5,4 @@ Paquete Python con modelos de Toma de Decisiones Multicriterio (Normalización, 
 ## Instalación
 
 ```python
-!pip install git+[https://github.com/Leonavarro2287/Modelos2026_Normalizacion_Ponderacion_Agregacion.git](https://github.com/Leonavarro2287/Modelos2026_Normalizacion_Ponderacion_Agregacion.git) -q
+!pip install git+https://github.com/Leonavarro2287/Modelos2026_Normalizacion_Ponderacion_Agregacion.git -q
