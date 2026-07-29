@@ -9,7 +9,7 @@ Paquete Python con herramientas completas para Estadística Descriptiva, Normali
 Ejecutá esta celda en Google Colab para instalar la última versión directamente desde el repositorio:
 
 ```python
-!pip install git+[https://github.com/Leonavarro2287/Modelos2026_Normalizacion_Ponderacion_Agregacion.git](https://github.com/Leonavarro2287/Modelos2026_Normalizacion_Ponderacion_Agregacion.git) -q
+!pip install git+https://github.com/Leonavarro2287/Modelos2026_Normalizacion_Ponderacion_Agregacion.git -q
 ```
 
 ---
