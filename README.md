@@ -80,35 +80,6 @@ run_topsis()
 from decision_models import run_rim
 run_rim()
 ```
-
----
-
-## 📐 Métodos y Funcionalidades en Detalle
-
-### Métodos de Normalización disponibles
-- **Fracción del Máximo:** $r_{ij} = \frac{x_{ij}}{\max_i x_{ij}}$
-- **Fracción de la Suma:** $r_{ij} = \frac{x_{ij}}{\sum_i x_{ij}}$
-- **Fracción del Rango:** $r_{ij} = \frac{x_{ij} - \min x}{\max x - \min x}$
-- **Del Vector:** $r_{ij} = \frac{x_{ij}}{\sqrt{\sum_i x_{ij}^2}}$
-- **Z-Score:** $r_{ij} = \frac{x_{ij} - \bar{x}}{\sigma}$
-- **Ideal de Referencia (RIM):** Asigna valor $1.0$ a los valores contenidos dentro del intervalo $[C, D]$ y penaliza progresivamente los valores externos.
-
-### Métodos de Ponderación disponibles
-- **Uniforme:** Pesos iguales para todos los criterios ($1/n$).
-- **Desviación Estándar:** Ponderación basada en la dispersión absoluta.
-- **Coeficiente de Variación:** Ponderación basada en la variabilidad relativa ($DS / \text{Media}$).
-- **Entropía:** Ponderación objetiva según el grado de incertidumbre e información provista por cada criterio.
-- **CRITIC:** Ponderación objetiva que incorpora contraste y correlación entre criterios.
-- **Ordenación Simple:** Asignación por rangos/jerarquías ($1$ a $n$).
-- **Tasación Simple:** Asignación directa por puntajes asignados por el decisor.
-- **AHP:** Comparaciones pareadas (Matriz de Saaty).
-
-### Métodos de Distancia para TOPSIS y RIM
-- **Euclídea ($p=2$):** $S = \sqrt{\sum (V_{ij} - V_j)^2}$
-- **Ciudad / Manhattan ($p=1$):** $S = \sum |V_{ij} - V_j|$
-- **Raíz de Manhattan:** $S = \sqrt{\sum |V_{ij} - V_j|}$
-- **Tchebycheff ($p=\infty$):** $S = \max |V_{ij} - V_j|$
-
 ---
 
 ## 📂 Formato de los archivos de entrada (Excel / CSV)
