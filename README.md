@@ -6,3 +6,6 @@ Paquete Python con modelos de Toma de Decisiones Multicriterio (Normalización, 
 
 ```python
 !pip install git+https://github.com/Leonavarro2287/Modelos2026_Normalizacion_Ponderacion_Agregacion.git -q
+
+🛠️ Herramientas disponibles
+📐 Estadística Descriptiva: Calcula métricas descriptivas, matriz de correlación de Pearson, boxplots e histogramas.
