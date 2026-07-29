@@ -1,4 +1,4 @@
-# Modelos de Decision
+# Modelos de Decision 2025
 
 Paquete Python con herramientas completas para Estadística Descriptiva, Normalización, Ponderación, Agregación y Métodos Multicriterio (AHP, TOPSIS y RIM) para usar directamente en Google Colab.
 
