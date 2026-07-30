@@ -7,13 +7,37 @@ from IPython.display import display, clear_output, HTML
 warnings.filterwarnings("ignore")
 pd.options.display.float_format = '{:.4f}'.format
 
-def _norm_fraccion_max(df): return df.div(df.max())
-def _norm_fraccion_suma(df): return df.div(df.sum())
-def _norm_fraccion_rango(df):
-    rango = df.max() - df.min()
-    return (df - df.min()).div(rango.replace(0, np.nan))
-def _norm_vector(df): return df.div(np.sqrt((df**2).sum()))
-def _norm_zscore(df): return (df - df.mean()) / df.std(ddof=1)
+def _norm_fraccion_max(df): 
+    return df.div(df.max())
+
+def _norm_fraccion_suma(df): 
+    return df.div(df.sum())
+
+def _norm_fraccion_rango(df, min_values=None, max_values=None):
+    """
+    Normalización de rango con opción de valores mín/máx personalizados.
+    
+    Si min_values y max_values son None, usa los valores reales de los datos.
+    Si se proporcionan, usa esos valores personalizados.
+    """
+    if min_values is None:
+        min_vals = df.min()
+    else:
+        min_vals = pd.Series(min_values)
+    
+    if max_values is None:
+        max_vals = df.max()
+    else:
+        max_vals = pd.Series(max_values)
+    
+    rango = max_vals - min_vals
+    return (df - min_vals).div(rango.replace(0, np.nan))
+
+def _norm_vector(df): 
+    return df.div(np.sqrt((df**2).sum()))
+
+def _norm_zscore(df): 
+    return (df - df.mean()) / df.std(ddof=1)
 
 def _norm_ideal_ref(df, metas_rim):
     result = df.copy()
@@ -42,7 +66,8 @@ NORM_METODOS = {
 
 L2 = {"df": None, "df_norm": None, "df_show": None}
 
-def _sep(texto=""): return widgets.HTML(f"<hr><b>{texto}</b>")
+def _sep(texto=""): 
+    return widgets.HTML(f"<hr><b>{texto}</b>")
 
 def _descargar_enlace(df, nombre_archivo, titulo_hoja, metodo):
     buf = io.BytesIO()
@@ -82,10 +107,43 @@ def run_normalizacion():
     dl2_btn.layout.display = "none"
     dl2_out     = widgets.Output()
 
+    # Nuevo: Box para parámetros de Fracción del Rango
+    rango_box = widgets.VBox([])
+    rango_inputs = {}
+
+    # Antiguo: Box para parámetros de Ideal de referencia (RIM)
     rim_box = widgets.VBox([])
     rim_inputs = {}
 
+    def _crear_rango_inputs(criterios):
+        """Crea inputs para valores mín/máx personalizados en Fracción del Rango"""
+        nonlocal rango_inputs
+        children = []
+        rango_inputs = {}
+        
+        for crit in criterios:
+            if L2["df"] is not None and crit in L2["df"].columns:
+                col_data = L2["df"][crit].dropna()
+                sugerido_min = col_data.min() if len(col_data) else 0.0
+                sugerido_max = col_data.max() if len(col_data) else 1.0
+            else:
+                sugerido_min, sugerido_max = 0.0, 1.0
+            
+            w_min = widgets.BoundedFloatText(value=round(sugerido_min, 4),
+                                             min=-1e6, max=1e6, step=0.01,
+                                             description=f'{crit[:15]} Mín:',
+                                             layout=widgets.Layout(width='280px'))
+            w_max = widgets.BoundedFloatText(value=round(sugerido_max, 4),
+                                             min=-1e6, max=1e6, step=0.01,
+                                             description='Máx:',
+                                             layout=widgets.Layout(width='280px'))
+            rango_inputs[crit] = (w_min, w_max)
+            children.append(widgets.HBox([w_min, w_max]))
+        
+        rango_box.children = children
+
     def _crear_rim_inputs(criterios):
+        """Crea inputs para parámetros Ideal de referencia (RIM)"""
         nonlocal rim_inputs
         children = []
         rim_inputs = {}
@@ -108,20 +166,32 @@ def run_normalizacion():
             children.append(widgets.HBox([w_c, w_d]))
         rim_box.children = children
 
-    def _actualizar_visibilidad_rim(*args):
-        if norm_method2.value == "Ideal de referencia":
+    def _actualizar_visibilidad_parametros(*args):
+        """Actualiza qué parámetros se muestran según el método seleccionado"""
+        metodo = norm_method2.value
+        
+        # Mostrar Fracción del Rango si se selecciona ese método
+        if metodo == "Fracción del rango":
+            _crear_rango_inputs(col_crit2.value)
+            rango_box.layout.display = ""
+        else:
+            rango_box.layout.display = "none"
+        
+        # Mostrar RIM si se selecciona ese método
+        if metodo == "Ideal de referencia":
             _crear_rim_inputs(col_crit2.value)
             rim_box.layout.display = ""
         else:
             rim_box.layout.display = "none"
 
-    norm_method2.observe(_actualizar_visibilidad_rim, names="value")
-    col_crit2.observe(_actualizar_visibilidad_rim, names="value")
+    norm_method2.observe(_actualizar_visibilidad_parametros, names="value")
+    col_crit2.observe(_actualizar_visibilidad_parametros, names="value")
 
     def _load2(change):
         with upload2_out:
             clear_output()
-            if not upload2.value: return
+            if not upload2.value: 
+                return
             key = list(upload2.value.keys())[0]
             fdata = upload2.value[key]["content"]
             try:
@@ -132,7 +202,7 @@ def run_normalizacion():
                 col_crit2.options = cols
                 print(f"✅ {key}  |  {df.shape[0]} filas × {df.shape[1]} columnas")
                 display(df.head())
-                _actualizar_visibilidad_rim()
+                _actualizar_visibilidad_parametros()
             except Exception as e:
                 print(f"❌ Error: {e}")
 
@@ -142,9 +212,13 @@ def run_normalizacion():
         with run2_out:
             clear_output()
             df = L2["df"]
-            if df is None: print("❌ Cargá un archivo primero."); return
+            if df is None: 
+                print("❌ Cargá un archivo primero.")
+                return
             crit_cols = list(col_crit2.value)
-            if not crit_cols: print("❌ Seleccioná al menos un criterio."); return
+            if not crit_cols: 
+                print("❌ Seleccioná al menos un criterio.")
+                return
             metodo = norm_method2.value
 
             df_c = df[crit_cols].apply(pd.to_numeric, errors="coerce").fillna(0)
@@ -162,10 +236,22 @@ def run_normalizacion():
                         wc, wd = rim_inputs[crit]
                         rim_dict[crit] = (wc.value, wd.value)
                     df_norm = _norm_ideal_ref(df_c, rim_dict)
+                
+                elif metodo == "Fracción del rango":
+                    # Capturar valores personalizados de mín/máx
+                    min_dict = {}
+                    max_dict = {}
+                    for crit in crit_cols:
+                        w_min, w_max = rango_inputs[crit]
+                        min_dict[crit] = w_min.value
+                        max_dict[crit] = w_max.value
+                    df_norm = _norm_fraccion_rango(df_c, min_values=min_dict, max_values=max_dict)
+                
                 else:
                     df_norm = NORM_METODOS[metodo](df_c)
             except Exception as e:
-                print(f"❌ Error al normalizar: {e}"); return
+                print(f"❌ Error al normalizar: {e}")
+                return
 
             if alt_col and alt_col in df.columns:
                 df_norm_show = df_norm.copy()
@@ -186,7 +272,9 @@ def run_normalizacion():
         with dl2_out:
             clear_output()
             df_show = L2.get("df_show")
-            if df_show is None: print("❌ Normalizá primero."); return
+            if df_show is None: 
+                print("❌ Normalizá primero.")
+                return
             metodo = norm_method2.value
             display(_descargar_enlace(df_show, "matriz_normalizada.xlsx", "Normalizada", metodo))
 
@@ -210,6 +298,8 @@ def run_normalizacion():
     display(widgets.HBox([col_alt2, col_crit2]))
     display(_sep("3. Elegir método de normalización"))
     display(norm_method2)
+    display(_sep("Parámetros para Fracción del Rango (valores mín/máx personalizados)"))
+    display(rango_box)
     display(_sep("Parámetros para Ideal de referencia (RIM)"))
     display(rim_box)
     display(_sep("4. Normalizar"))
